@@ -1,82 +1,47 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react'
+import AddTask from './AddTask'
+import './App.css'
+import ToDolist from './ToDolist'
 
-import React, { Component } from 'react'
+const App = () => {
+  const [todoList, setTodoList] = useState([
+    { id: Math.random(), action :"learn Hooks", isDone:false },
+    {id: Math.random(),action :"learn props", isDone:true},
+    {id:Math.random(), action:"learn state",isDone:true}
+   ])
+   const [text, setText] = useState("")
+   const [count, setCount] = useState(0)
+   const handleComplete=(i)=>{
+     setTodoList(todoList.map(el=>
+     el.id==i? {...el,isDone:!el.isDone}:el ))
+   }
+   const handleDelete=(i)=>{
+     setTodoList(todoList.filter(el=> el.id!==i))
+   }
+   const handleChange=(e)=>{
+     setText(e.target.value)   }
+     const handleAdd=(x)=>{
+       const NewTask={
+         id:Math.random(),
+         isDone:false,
+         action:x
+       }
+      text.trim().length==0? alert("the input is empty"):
+       setTodoList([...todoList,NewTask])
+       setText("")
+     }
+     const handleSubmit=(e)=>{
+      e.preventDefault();
+      handleAdd(text)
+     }
+ 
+  return (
+    <div>
+<AddTask handleSubmit={handleSubmit} handleChange={handleChange}text={text}/>
+<ToDolist todoList={todoList} handleComplete={handleComplete} handleDelete={handleDelete} />
 
-export default class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { userInput: ' ',
-      items: [
-      { id: Math.random(),action:"learn props",isCompleted:false},
-      { id: Math.random(),action:"learn Hooks",isCompleted:false},
-       { id: Math.random(),action:"learn Java",isCompleted:false}
-    ]};
-
-
-  }
-
-
-  onChange(event){
-   
-    let ob={
-    id:Math.random(),
-    action:event.target.value,
-    isCompleted:false}
-    this.setState({items: [...this.state.items,ob]})
-    console.log(this.state);
-    this.setState({
-      userInput : event.target.value
-    })
-  }
-
-  addTodo(event)
-  {
-    event.preventDefault();
-    this.setState({
-      userInput:"",
-      items : [...this.state.items, this.state.userInput]
-    })
-    console.log(this.state)
-  }
-
-  doneTodo(event)
-  {
-
-  }
-renderToDo()
-{
-  return this.state.items.map((item) =>{
-    return (
-    <div key={item} >
-      {item }
-      <button onClick={this.deleteToDo.bind(this)}>X</button>
-    </div>)
-  })  
+    </div>
+  )
 }
 
-  render() {
-    return (
-      <div>
-        <h1 >
-          Action To Do : </h1>
-        <form>
-          <input 
-                    type="text" 
-                    placeholder="let do somthing new" 
-                    onChange={this.onChange.bind(this)} 
-                    value={this.state.userInput}
-            />
-        <button onClick={this.addTodo.bind(this)}> Add me </button>
-      </form>
-      <br/>
-      <div>
-        {this.renderToDo()}
-        </div>
-      </div>
-    )
-  }
-}
-
-
-
+export default App
